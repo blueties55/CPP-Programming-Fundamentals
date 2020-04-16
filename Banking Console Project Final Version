@@ -1,0 +1,490 @@
+// Bank Consle Project by Gage Harris, Kyle Funder, Jimmy Aguiar, and Taro Bush
+
+// Preprocessor Directives
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <iomanip>
+#include <fstream>
+#include <cctype>
+#include <conio.h>
+#include <chrono>
+#include <thread>
+#include <ctime>
+
+// Namespace for std:: beforce basically everyline of this code!
+using namespace std;
+using namespace chrono;
+using namespace this_thread;
+
+//---------------CLASSES---------------//
+class account {
+	// Class variables
+	long long int acctNum; // Account number
+	int randAcctGen = 11111 + (rand() % 99999); // Randomly generated account number
+	double deposit; // Account deposit
+	char name[50]; // Account holder name
+	char acctType; // Type of account
+
+	// Account class voids that are the callable functions of each page
+public:
+	void createAcct(); // Create account
+	void depositFun(double); // Deposit account
+	void withdrawFun(double); // Withdraw account
+	void modFun(); // Modify Account
+	void viewAllFun(); // Function to view accounts
+	void acctInfo() const; // Account info such as number, name, type, and amount available.
+	double balFun() const; // Check account balance
+	double retDeposit() const; // Basically a cout for your deposit in function form
+	int retAcct() const; // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	char retType() const; // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+};
+
+// The actual code behind each function that was defined above. See above for each functions purpose
+
+void account::createAcct() {
+
+	cout << "\n\n\n" << setw(50) << "---------NEW ACCOUNT---------";
+	cout << "\n\n" << setw(46) << "Your Account Number is:  " << randAcctGen << endl;
+	cout << "\n\n" << setw(66) << "Please Verify your Generated Account Number: ";
+	cin >> acctNum;
+	while (acctNum != randAcctGen) {
+		cout << "\n\n" << setw(87) << "Incorrect Account Number, Please Enter your Account Number again!: ";
+		cin >> setw(5) >> acctNum;
+	}
+	cout << "\n\n" << setw(59) << "Enter the Name of the Account Holder: ";
+	cin.ignore();
+	cin.getline(name, 50);
+	cout << "\n\n" << setw(47) << "Enter Account Type (C/S): ";
+	cin >> acctType;
+	acctType = toupper(acctType);
+	cout << "\n\n" << setw(88) << "Enter Deposit Amount (Savings - 500 min. / Checking - 1000 min.): $";
+	cin >> deposit;
+	if ((deposit < 500 && acctType == 'S') || (deposit < 1000 && acctType == 'C')) { // gives the account type's min balance
+		cout << "\n" << setw(42) << "Insufficience balance";
+	}
+	else {
+		cout << "\n\n\n" << setw(37) << "Account Created!" << "\n\n";
+		sleep_for(seconds(2));
+	}
+}
+
+void account::depositFun(double x) {
+	deposit += x;
+}
+
+void account::withdrawFun(double x) {
+	deposit -= x;
+}
+
+void account::acctInfo() const {
+
+	cout << "\n" << setw(33) << "Account No. " << acctNum;
+	cout << "\n" << setw(42) << "Account Holder Name: " << name;
+	cout << "\n" << setw(38) << "Type of Account: " << acctType;
+	cout << "\n" << setw(39) << "Account Balance: $" << deposit << "\n\n";
+	sleep_for(seconds(2));
+}
+
+void account::modFun() {
+
+	cout << "\n" << setw(35) << "Account No.: " << acctNum << "\n";
+	cout << "\n" << setw(43) << "Account Holder Name: ";
+	cin.ignore();
+	cin.getline(name, 50);
+	cout << "\n" << setw(39) << "Type of Account: ";
+	cin >> acctType;
+	acctType = toupper(acctType);
+	cout << "\n" << setw(40) << "Account Balance: $";
+	cin >> deposit;
+}
+
+void account::viewAllFun() {
+	cout << setw(26) << acctNum << setw(18) << name << setw(10) << acctType << setw(15) << deposit << endl;
+}
+
+double account::balFun() const {
+	return deposit;
+}
+
+double account::retDeposit() const {
+	return deposit;
+}
+
+int account::retAcct() const {
+	return acctNum;
+}
+
+char account::retType() const {
+	return acctType;
+}
+
+//---------------FUNCTION DECLERATION---------------//
+void intro(); // intro screen for program
+void writeAcct(); // create a new accout and write it to account.dat
+void deposit_withdraw(int, int); // deposits or withdraws from the account depending on the selection in the menu. Just showing off tbh...
+void currencyConvert(int, int); // withdraws and converts from usd to peso's or GBP
+void bal(int); // check account balance
+void mod(int); // modify an existing account
+void closeAcct(int); // close an existing account
+void viewAll(); // view all accounts
+
+//---------------MAIN PROGRAM CODE---------------//
+int main() {
+	// main program variables
+	intro(); // Shows the into function before anything
+	srand(time(NULL)); // Set the random number generator to run based on system clock
+	int acctNum; // Redefining the account number to call it in the code below.
+	char ch; // the "channel" for the switch statment
+	int option; // option for the user to convert to GBP or peso's
+
+	do { // Basically do the following
+		system("cls"); // Clears the screen of the previous info
+		cout << "\n\n\n" << setw(90) << "------------------------------MAIN MENU------------------------------\n";
+		cout << "\n\n" << setw(37) << "01. NEW ACCOUNT" << setw(50) << "05. MODIFY AN ACCOUNT"
+			<< "\n" << setw(46) << "02. DEPOSIT INTO ACCOUNT" << setw(40) << "06. CLOSE AN ACCOUNT"
+			<< "\n" << setw(47) << "03. WITHDRAW FROM ACCOUNT" << setw(42) << "07. CURRENCY CONVERSION"
+			<< "\n" << setw(39) << "04. CHECK BALANCE" << setw(48) << "08. VIEW ALL ACCOUNTS"
+			<< "\n" << setw(59) << "09. EXIT\n"
+			<< "\n" << setw(33) << "SELECTION: ";
+		cin >> ch;
+		system("cls");
+
+		switch (ch) { // Start of your "channel" switch statement to choose the menu items
+
+			// NEW ACCT
+		case '1':
+			writeAcct();
+			break;
+			// DEPOSIT
+		case '2':
+			cout << "\n\n\n" << setw(59) << "---------DEPOSIT INTO ACCOUNT---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			deposit_withdraw(acctNum, 1);
+			break;
+			// WITHDRAW
+		case '3':
+			cout << "\n\n\n" << setw(60) << "---------WITHDRAW FROM ACCOUNT---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			deposit_withdraw(acctNum, 2);
+			break;
+			// BALANCE
+		case '4':
+			cout << "\n\n\n" << setw(60) << "---------CHECK ACCOUNT BALANCE---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			bal(acctNum);
+			break;
+			// MODIFY ACCT
+		case '5':
+			cout << "\n\n\n" << setw(60) << "---------MODIFY AN ACCOUNT---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			mod(acctNum);
+			break;
+			// CLOSE ACCT
+		case '6':
+			cout << "\n\n\n" << setw(55) << "---------CLOSE AN ACCOUNT---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			closeAcct(acctNum);
+			break;
+			// CONVERT CURRENCY
+		case '7':
+			cout << "\n\n\n" << setw(60) << "---------WITHDRAW AND CONVERT CURRENCY---------";
+			cout << "\n\n" << setw(48) << "Enter your account number: ";
+			cin >> acctNum;
+			cout << "\n\n" << setw(68) << "Enter 1 for Great British Pound, 2 for Peso's: ";
+			cin >> option;
+			currencyConvert(acctNum, option);
+			break;
+			//VIEW ALL ACCOUNTS
+			case '8':
+			viewAll();
+			break;
+			// EXIT PRGM
+		case '9':
+			cout << "\n\n" << setw(76) << "Thanks for using Lonestar Bank Console. Goodbye!\n\n\n\n\n\n\n";
+			sleep_for(seconds(5));
+			break;
+			// INPUT VALIDATION
+		default:
+			cout << "The valid choices are 1 through 9. Please try again and select one of those.";
+			sleep_for(seconds(2));
+			break;
+		}
+
+	} 
+	while (ch != '9');
+	return 0;
+}
+//	VOID FUNTIONS FOR READ/WRITE/DISPLAY OF ACCOUNT.DAT
+
+void intro() { // Introduction for the program with password because the bank teller is handling sensitive info!
+	char ch; // user input that reads one character at a time
+	string adminPass; // what the user input is converted to from the char to actually do input validation of the password
+
+	cout << "\n\n\n\n" << setw(92) << "---------------Welcome to Lonestar Banking Console----------------------";
+	cout << "\n\n\n\n" << setw(92) << "-----Made by: Gage Harris, Kyle Funder, Jimmy Aguiar, and Taro Bush-----";
+	cout << "\n\n\n\n" << setw(92) << "------------School Project at Lonestar College System-------------------";
+	cout << "\n\n" << setw(52) << "Enter Administrative password: ";
+	ch = _getch();
+	while (ch != 13) {
+		adminPass.push_back(ch);
+		cout << '*';
+		ch = _getch();
+	}
+	
+
+	if (adminPass == "admin") {
+		cout << "\n\n" << setw(59) << "Loading";
+		sleep_for(seconds(2));
+		cout << ".";
+		sleep_for(seconds(1));
+		cout << ".";
+		sleep_for(seconds(1));
+		cout << ".";
+		sleep_for(milliseconds(20));
+	}
+	else {
+		cout << "\n\n" << setw(63) << "Access denied";
+		sleep_for(seconds(2));
+		cout << ".";
+		sleep_for(seconds(1));
+		cout << ".";
+		sleep_for(seconds(1));
+		cout << ".";
+		sleep_for(milliseconds(20));
+		system("cls");
+		intro();
+	}
+}
+
+void writeAcct() {
+	account ac; //call the account class
+	ofstream outFile; //open an output file
+	outFile.open("account.dat", ios::binary | ios::app); // create the account.dat file
+	ac.createAcct(); //run this function into the file
+	outFile.write(reinterpret_cast<char*> (&ac), sizeof(account)); // write to the file (this is necessary for encryption of the accounts)
+	outFile.close(); // close the file
+	cout << endl;
+	system("pause");
+}
+
+void deposit_withdraw(int n, int option) {
+	double amt; // variable for withdraw or deposit amount
+	bool found = false; // file open validation
+	account ac; // open and run the class account
+	fstream File; // open an editable file type
+	File.open("account.dat", ios::binary | ios::in | ios::out); // open account.dat
+	if (!File) // file open validation
+	{
+		cout << "File could not be open !! Press any Key...";
+		return;
+	}
+	while (!File.eof() && found == false)
+	{
+		File.read(reinterpret_cast<char*> (&ac), sizeof(account));
+		if (ac.retAcct() == n)
+		{
+			ac.retAcct(); // return account info for the previously input account number
+			if (option == 1) // deposit option
+			{
+				ac.acctInfo();
+				cout << "\n" << setw(44) << "Enter Deposit Amount: $";
+				cin >> amt;
+				ac.depositFun(amt);
+			}
+			if (option == 2) { // withdraw option
+				ac.acctInfo();
+				cout << "\n" << setw(45) << "Enter Withdraw Amount: $";
+				cin >> amt;
+				int bal = ac.retDeposit() - amt;
+				if ((bal < 500 && ac.retType() == 'S') || (bal < 1000 && ac.retType() == 'C')) { // gives the account type's min balance
+					cout << "\n" << setw(42) << "Insufficience balance";
+				}
+				else {
+					ac.withdrawFun(amt);
+				}
+			}
+			int pos = (-1) * static_cast<int>(sizeof(ac));
+			File.seekp(pos, ios::cur);
+			File.write(reinterpret_cast<char*> (&ac), sizeof(account));
+			cout << "\n" << setw(37) << "Account Updated!" << endl;
+			found = true;
+		}
+	}
+	if (found == false) {
+		cout << "\n\n" << setw(38) << "Record Not Found ";
+	}
+
+	File.close();
+
+	cout << endl; // Spacing 
+	system("pause"); // Press any key to continue...
+}
+
+void bal(int n) { // Let's help the user find out thier balance
+	account ac; // Call the account Class from above to get all our functions
+	bool flag = false; // account.dat file open validation
+	ifstream inFile; // open the file as an output file
+	inFile.open("account.dat", ios::binary); // Open and decript a file
+	if (!inFile) { // if we can't open the file print the cout
+		cout << "File could not be opened!! Press any key to continue...";
+		return;
+	}
+	cout << "\n" << setw(36) << "BALANCE DETAILS" << endl; // Let the user know what they are seeing
+
+	while (inFile.read(reinterpret_cast<char*> (&ac), sizeof(account))) { // Find out what the balance is
+		if (ac.retAcct() == n) { // Print all the accoutn info
+			ac.acctInfo(); // if we are able to print that info
+			flag = true; // set our bool to tru because we did it and printed our info
+		}
+	}
+	inFile.close(); // close the file once we have view the balance
+	if (flag == false) { // If we don't open the file our bool did not update so we didn't open the account and we are letting the user know this
+		cout << "\n\nAccount number does not exist";
+	}
+	cout << endl; // Spacing because pretty
+	system("pause"); // Please hit any key to continue....
+}
+
+void mod(int n) { // We are going to update our account info. I am going to skip the repeating lines here bare with me lol
+	bool found = false;
+	account ac;
+	fstream File;
+	File.open("account.dat", ios::binary | ios::in | ios::out);
+	if (!File) {
+		cout << "File could not be opened! Press any key to continue...";
+		return;
+	}
+	while (!File.eof() && found == false) {
+		File.read(reinterpret_cast<char*> (&ac), sizeof(account));
+		if (ac.retAcct() == n) {
+			ac.acctInfo();
+			cout << "\n\n" << setw(47) << "Enter New Account Details" << endl; // Let's enter our new info
+			ac.modFun(); // call that function to update our info from the above account class
+			int pos = (-1) * static_cast <int> (sizeof(account));
+			File.seekp(pos, ios::cur);
+			File.write(reinterpret_cast <char*> (&ac), sizeof(account));
+			cout << "\n\n" << setw(38) << "Account Updated!" << endl; // Let the user know thier updates are complete
+			found = true;
+		}
+	}
+	File.close();
+	if (found == false) { // file and account number validation
+		cout << "\n\n Records not found\n";
+	}
+	cout << endl;
+	system("pause");
+}
+
+void closeAcct(int n) { // Let's close a users account
+	account ac;
+	ifstream inFile;
+	ofstream outFile;
+	inFile.open("account.dat", ios::binary);
+	if (!inFile) {
+		cout << "File could not be open !! Press any Key...";
+		return;
+	}
+	outFile.open("Temp.dat", ios::binary); // Store everything except the line the account number given in a new file
+	inFile.seekg(0, ios::beg);
+	while (inFile.read(reinterpret_cast<char*> (&ac), sizeof(account))) {
+		if (ac.retAcct() != n) {
+			outFile.write(reinterpret_cast<char*> (&ac), sizeof(account));
+		}
+	}
+	inFile.close();
+	outFile.close();
+	remove("account.dat"); // delete the file with the account we are deleting
+	rename("Temp.dat", "account.dat"); // This has a warning... honestly IDK why cause it is a very vital piece here?
+	// Above we replace Temp.dat with account.dat because we are done actually with the Temp.dat files
+	cout << "\n\n\t" << setw(27) << "Record Deleted"; // Let the user know that it has been deleted
+	cout << endl;
+	system("pause");
+}
+
+void currencyConvert(int n, int option) {
+	double amt; // what amount will be converted and withdrawn from account
+	double newAmt; // used to determin converted currency new value
+	bool found = false; // open file validation
+	account ac; // open class account
+	fstream File; // opening account.dat file as an editable and readable file
+	File.open("account.dat", ios::binary | ios::in | ios::out); // open account.dat
+	if (!File) { // file open validation
+		cout << "File could not be open !! Press any Key...";
+		return;
+	}
+	while (!File.eof() && found == false) {
+		File.read(reinterpret_cast<char*> (&ac), sizeof(account));
+		if (ac.retAcct() == n) {
+			ac.retAcct();
+			if (option == 1) { // withdraw and convert into GBP
+				ac.acctInfo(); // output all account info
+				cout << "\n" << setw(45) << "Enter Withdraw Amount: $";
+				cin >> amt; // amount being withdrawn
+				int bal = ac.retDeposit() - amt; // update balance
+				newAmt = amt / 0.77; // convert withdrawn amount into GBP
+				if ((bal < 500 && ac.retType() == 'S') || (bal < 1000 && ac.retType() == 'C')) { // managing balance minimum
+					cout << "\n" << setw(42) << "Insufficience balance";
+				}
+				else { // output converted withdraws
+					cout << setw(35) << "You withdrew $" << amt << " and you recieved GBP ";
+					cout << setprecision(2) << fixed << newAmt; // forces it to round to 2 decimals (it wanted to always do 3 decimals???)
+					ac.withdrawFun(amt);
+				}
+			}
+			if (option == 2) { // same as above except converting to pesos
+				ac.acctInfo();
+				cout << "\n" << setw(45) << "Enter Withdraw Amount: $";
+				cin >> amt;
+				int bal = ac.retDeposit() - amt;
+				newAmt = amt / 0.052; // pesos conversion calculation
+				if ((bal < 500 && ac.retType() == 'S') || (bal < 1000 && ac.retType() == 'C')) {
+					cout << "\n" << setw(42) << "Insufficience balance";
+				}
+				else {
+					cout << setw(35) << "You withdrew $" << amt << " and you recieved ";
+					cout << setprecision(2) << fixed << newAmt << " Peso's.";
+					ac.withdrawFun(amt);
+				}
+			}
+			int pos = (-1) * static_cast<int>(sizeof(ac));
+			File.seekp(pos, ios::cur);
+			File.write(reinterpret_cast<char*> (&ac), sizeof(account));
+			cout << "\n" << setw(37) << "Account Updated!" << endl;
+			found = true;
+		}
+	}
+	if (found == false) {
+		cout << "\n\n" << setw(38) << "Record Not Found ";
+	}
+
+	File.close();
+
+	cout << endl; // Spacing 
+	system("pause"); // Press any key to continue...
+}
+
+void viewAll() { // Really a WIP. I would like to add a switch with this info and maybe some more specialized tools but maybe we just don't worry honestly idk
+	account ac; // open account class
+	ifstream inFile; // open a output file
+	inFile.open("account.dat", ios::binary); // open account.day
+	if (!inFile) { // file open validation
+		cout << "File could not be open !! Press any Key...";
+		return;
+	} // output for all open accounts
+	cout << "\n\n" << setw(74) << "----------------ACCOUNT HOLDER LIST-----------------\n\n";
+	cout << "\n" << setw(74) << "====================================================\n";
+	cout << "\n" << setw(74) << "ACCOUNT NO.      NAME      ACCOUNT TYPE      BALANCE\n";
+	cout << "\n" << setw(74) << "====================================================\n";
+	while (inFile.read(reinterpret_cast<char*> (&ac), sizeof(account))) {
+		ac.viewAllFun(); // Show all the accounts stored in account.dat
+	}
+	inFile.close();
+	cout << endl;
+	system("pause");
+}
